@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from random import randint
 from binascii import unhexlify
 from typing import List, Tuple
