@@ -74,13 +74,13 @@ class CuteRSA:
         encrypted_message: List[int] = []
         for character in message:
             encrypted_message.append(
-                hex(
-                    pow(
-                        ord(character),
-                        self._cuteKeys["Public Key"][1],
-                        self._cuteKeys["Public Key"][0],
-                    )
+                # hex(
+                pow(
+                    ord(character),
+                    self._cuteKeys["Public Key"][1],
+                    self._cuteKeys["Public Key"][0],
                 )
+                # )
             )
         #
         return encrypted_message
@@ -91,7 +91,8 @@ class CuteRSA:
         decrypted_message: List[char] = [
             chr(
                 pow(
-                    int.from_bytes(unhexlify(character[2:]), "big"),
+                    # int.from_bytes(unhexlify(character[2:]), "big"),
+                    character,
                     self._cuteKeys["Private Key"][1],
                     self._cuteKeys["Public Key"][0],
                 )
@@ -100,7 +101,8 @@ class CuteRSA:
         ]
         return "".join(decrypted_message)
 
- #
+
+#
 
 
 if __name__ == "__main__":
