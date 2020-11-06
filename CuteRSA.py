@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from random import randint
-from typing import List, Tuple
-#from binascii import unhexlify
+from typing import List, Tuple, Any
+from collections.abc import Iterable
+
+# from binascii import unhexlify
+
 
 class CuteRSA:
     def __init__(self) -> None:
@@ -69,36 +72,70 @@ class CuteRSA:
 
     #
 
-    def cute_encrypt(self, message: str) -> List[int]:
+    def cute_mult(self, encr_element_one, encr_element_two) -> List[Any]:
+        return [encr_element_one[0] * encr_element_two[0]]
+
+    def cute_encrypt(self, message: Any) -> List[Any]:
         encrypted_message: List[int] = []
-        for character in message:
-            encrypted_message.append(
-                # hex(
-                pow(
+
+        plainMessage: List[int] = []
+        if not isinstance(message, Iterable):
+            plainMessage.append(message)
+        else:
+            plainMessage = message
+
+        for pl_element in plainMessage:
+            if type(pl_element) != str:
+                encr_element = pow(
+                    pl_element,
+                    self._cuteKeys["Public Key"][1],
+                    self._cuteKeys["Public Key"][0],
+                )
+                encrypted_message.append(encr_element)
+            #
+            elif type(pl_element) == str:
+                encr_element = pow(
                     ord(character),
                     self._cuteKeys["Public Key"][1],
                     self._cuteKeys["Public Key"][0],
                 )
-                # )
-            )
+                encrypted_message.append(encr_element)
+            #
         #
         return encrypted_message
 
     #
 
-    def cute_decrypt(self, message_encr: List[int]) -> str:
-        decrypted_message: List[char] = [
-            chr(
-                pow(
-                    # int.from_bytes(unhexlify(character[2:]), "big"),
-                    character,
-                    self._cuteKeys["Private Key"][1],
-                    self._cuteKeys["Public Key"][0],
+    def cute_decrypt(self, message_encr: List[int], decr_type) -> Any:
+        decrypted_message: List[Any] = list()
+
+        if decr_type == "number_operations":
+            for encr_element in message_encr:
+                decrypted_message.append(
+                    pow(
+                        encr_element,
+                        self._cuteKeys["Private Key"][1],
+                        self._cuteKeys["Public Key"][0],
+                    )
                 )
-            )
-            for character in message_encr
-        ]
-        return "".join(decrypted_message)
+            #
+            return decrypted_message
+        #
+        elif decr_type == "str_operations":
+            for encr_element in message_encr:
+                decrypted_message.append(
+                    chr(
+                        pow(
+                            encr_element,
+                            self._cuteKeys["Private Key"][1],
+                            self._cuteKeys["Public Key"][0],
+                        )
+                    )
+                )
+            #
+            return "".join(decrypted_message)
+        #
+        return False
 
 
 #
@@ -106,8 +143,14 @@ class CuteRSA:
 
 if __name__ == "__main__":
     rsa = CuteRSA()
-    encrypted_message = rsa.cute_encrypt("Computing")
-    print(f"Encrypted Message: {encrypted_message}\n")
 
-    decrypted_message = rsa.cute_decrypt(encrypted_message)
-    print(f"Decrypted Message: {decrypted_message}\n")
+    number_one = rsa.cute_encrypt(100)
+    number_two = rsa.cute_encrypt(5)
+
+    encr_h_mult = rsa.cute_mult(number_one, number_two)
+
+    decr_message = rsa.cute_decrypt(encr_h_mult, "number_operations")
+
+    print(
+        f"It seems that we have an homomorphic result! The result of our operation is: {decr_message}"
+    )
