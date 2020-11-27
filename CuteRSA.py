@@ -10,6 +10,8 @@ class CuteRSA:
     def __init__(self) -> None:
         self._cuteKeys = {"Public Key": Tuple, "Private Key": Tuple}
         self._generateKeys()
+    
+    #
 
     def _loadListOfPrimes(self) -> List[int]:
         list_of_primes: List[int] = []
